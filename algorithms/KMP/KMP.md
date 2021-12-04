@@ -266,6 +266,7 @@ func getNext(next []int, str string) {
 		if str[j] == str[i] {
 			j++
 		}
+        // 将j（前缀的长度）赋给next[i]
 		next[i] = j
 	}
 }
