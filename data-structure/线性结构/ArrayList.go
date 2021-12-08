@@ -1,7 +1,6 @@
 package ArrayList
 
 import (
-	"fmt"
 	"errors"
 )
 
@@ -18,7 +17,7 @@ type List interface {
 
 	// 获取
 	Get(index int) (interface{}, error)
-	
+
 	// 修改
 	Set(index int, newVal interface{}) error
 
@@ -40,7 +39,7 @@ func NewArrayList() *ArrayList {
 	// 初始化结构体，len为0，cap为10
 	list := new(ArrayList)
 	// 开辟内存空间
-	list.data := make([]interface{}, 0, 10)
+	list.data = make([]interface{}, 0, 10)
 
 	list.Last = 0
 
@@ -66,23 +65,22 @@ func (list *ArrayList) checkIsFull() {
 	}
 }
 
-
 // 获取数据
-func (list *ArrayList) Get(index int) interface{} {
+func (list *ArrayList) Get(index int) (interface{}, error) {
 	// 下标无效，越界
 	if index < 0 || index >= list.Last {
 		return nil, errors.New("index out of range")
 	}
 
 	// 正常 return
-	return list.Last[index], nil
+	return list.data[index], nil
 }
 
 // 修改数据
 func (list *ArrayList) Set(index int, newVal interface{}) error {
 	// 下标无效，越界
 	if index < 0 || index >= list.Last {
-		return nil, errors.New("index out of range")
+		return errors.New("index out of range")
 	}
 
 	//
@@ -94,7 +92,7 @@ func (list *ArrayList) Set(index int, newVal interface{}) error {
 func (list *ArrayList) Insert(index int, newVal interface{}) error {
 	// 下标无效，越界
 	if index < 0 || index >= list.Last {
-		return nil, errors.New("index out of range")
+		return errors.New("index out of range")
 	}
 
 	// 检测切片容量
@@ -104,7 +102,7 @@ func (list *ArrayList) Insert(index int, newVal interface{}) error {
 	list.data = list.data[:list.Last+1]
 
 	// 数据移位，从后往前的顺序移动
-	for i := list.Last, i > index; i-- {
+	for i := list.Last; i > index; i-- {
 		list.data[i] = list.data[i-1]
 	}
 
@@ -112,7 +110,7 @@ func (list *ArrayList) Insert(index int, newVal interface{}) error {
 
 	// 数组大小加1
 	list.Last++
-	
+
 	return nil
 }
 
