@@ -17,9 +17,9 @@ func NewNode(v interface{}) *Node {
 	return &Node{v, nil}
 }
 
-func CreatLList(v interface{}) *LList {
-	header := NewNode(v)
-	return &LList{header, 1}
+func CreatLList() *LList {
+	header := &Node{}
+	return &LList{header, 0}
 }
 
 func (l *LList) AddHead(data interface{}) {
@@ -48,12 +48,16 @@ func (l *LList) Insert(i int, data interface{}) {
 		return
 	}
 
+	if i <= 0 {
+		l.AddHead(data)
+		return
+	}
 	newNode := NewNode(data)
 
 	j := 1
 	pre := l.Header
 
-	for j != i {
+	for j != i && pre.Next != nil {
 		pre = pre.Next
 		j++
 	}
@@ -67,26 +71,28 @@ func (l *LList) Insert(i int, data interface{}) {
 }
 
 func (l *LList) Delete(i int) {
-	defer func() {
-		l.Length--
-	}()
+
+	if i >= l.Length || i < 0 {
+		return
+	}
 
 	// 删除头结点，索引从0开始
 	if i == 0 {
 		// 把header指向第二个结点
 		l.Header = l.Header.Next
+		l.Length--
 		return
 	}
 
-	j := 0
 	current := l.Header
-	for j == i-1 {
+	for i > 1 {
 		current = current.Next
-		j++
+		i--
 	}
-
-	after := current.Next.Next
-	current.Next = after
+	after := current.Next
+	current.Next = after.Next
+	after.Next = nil
+	l.Length--
 }
 
 func (l *LList) AppendTail(data interface{}) {
@@ -97,6 +103,7 @@ func (l *LList) AppendTail(data interface{}) {
 
 	if l.Length == 0 {
 		l.Header = node
+		return
 	}
 
 	if l.Length > 0 {
@@ -108,6 +115,7 @@ func (l *LList) AppendTail(data interface{}) {
 		// 将新插入的结点的地址赋值给当前最后一个结点的Next
 		// 此时node为当前新链表的最后一个结点。
 		current.Next = node
+		return
 	}
 }
 
@@ -135,7 +143,7 @@ func (l *LList) Get(index int) interface{} {
 	if index < l.Length-1 {
 		j := 0
 		current := l.Header
-		for j != index {
+		for j != index && current.Next != nil {
 			current = current.Next
 			j++
 		}
@@ -155,22 +163,14 @@ func (l *LList) Get(index int) interface{} {
 }
 
 func main() {
-	llist := CreatLList(0)
-	llist.AddHead(1)
+	llist := CreatLList()
 	llist.AddHead(2)
-	llist.AppendTail(4)
-	llist.Insert(3, 9)
 	llist.Scan()
-
-	fmt.Printf("查询到的第%d的节点值是%d\n", 0, llist.Get(0))
-	fmt.Printf("查询到的第%d的节点值是%d\n", 4, llist.Get(4))
-	fmt.Print("删除了头结点")
-	llist.Delete(0)
-	fmt.Print("...\n")
+	fmt.Printf("...\n")
+	llist.Delete(1)
 	llist.Scan()
-	fmt.Print("在第二个位置插入了6...\n")
-	llist.Insert(2, 6)
-	llist.Get(2)
-	llist.AppendTail(0)
+	fmt.Printf("...\n")
+	llist.AddHead(2)
+	llist.AddHead(7)
 	llist.Scan()
 }
