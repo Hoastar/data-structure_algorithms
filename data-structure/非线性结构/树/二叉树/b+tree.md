@@ -36,11 +36,14 @@ B+树其实和B数是非常相似的，我们先看看相同点
     ![图-如插入](https://image-static.segmentfault.com/132/512/1325121146-5d81954d67e35_articlex)
 
 * 插入25，此时元素数量大于4个了，分裂 
+
     ![图-如插入25](https://image-static.segmentfault.com/212/739/2127399930-5d81954e13616_articlex)
 
 * 接着插入26，30，继续分裂
+
     ![图-如插入26，30](https://image-static.segmentfault.com/417/308/4173086827-5d81954ed2058_articlex
     )
+    
     ![图-如分裂](https://image-static.segmentfault.com/373/083/37308380-5d81954ff128c_articlex)
 
 ## 删除操作
