@@ -5,49 +5,48 @@ import (
 )
 
 func main() {
-	var sortArray = []int{3,2,1,5,6,4}
-	fmt.Println(sortArray)
-	qsort(sortArray, 0, len(sortArray)-1)
-	fmt.Println(sortArray)
+	var Array = []int{3, 2, 1, 5, 6, 4}
+	fmt.Println(Array)
+	Array = sortArray(Array)
+	fmt.Println(Array)
 }
-func qsort(array []int, low, high int) {
-	if low < high {
-		m := partition(array, low, high)
-		// fmt.Println(m)
-		qsort(array, low, m-1)
-		qsort(array, m+1, high)
-	}
-}
-func partition(array []int, low, high int) int {
-	key := array[low]
-	tmpLow := low
-	tmpHigh := high
-	for {
-		// fmt.Printf("key= %v\n", key)
-		//查找小于等于key的元素，该元素的位置一定是tmpLow到high之间，因为array[tmpLow]及左边元素小于等于key，不会越界
-		for array[tmpHigh] > key {
-			tmpHigh--
-		}
-		//找到大于key的元素，该元素的位置一定是low到tmpHigh+1之间。因为array[tmpHigh+1]必定大于key
-		for array[tmpLow] <= key && tmpLow < tmpHigh {
-			tmpLow++
-		}
-		if tmpLow >= tmpHigh {
-			break
-		}
-		// swap(array[tmpLow], array[tmpHigh])
-		array[tmpLow], array[tmpHigh] = array[tmpHigh], array[tmpLow]
-		fmt.Println(array)
-	}
-	/*
-			fmt.Printf("low= %v\n", low)
-			fmt.Printf("array[low]= %v\n", array[low])
-			fmt.Printf("tmpLow= %v\n", tmpLow)
-			fmt.Printf("array[tmpLow]= %v\n", array[tmpLow])
 
-			fmt.Printf("low= %v\n", low)
-		    fmt.Printf("tmplow= %v\n", tmpLow)
-	*/
-	array[tmpLow], array[low] = array[low], array[tmpLow]
-	return tmpLow
+/*
+快速排序，基于比较，不稳定算法，时间平均O(nlogn)，最坏O(n^2)，空间O(logn)
+分治思想，选主元，依次将剩余元素的小于主元放其左侧，大的放右侧
+然后取主元的前半部分和后半部分进行同样处理，直至各子序列剩余一个元素结束，排序完成
+
+注意：
+	小规模数据(n<100)，由于快排用到递归，性能不如插排
+	进行排序时，可定义阈值，小规模数据用插排，往后用快排
+	(小数，主元，大数)
+*/
+func sortArray(nums []int) []int {
+	var quick func(nums []int, left, right int) []int
+	quick = func(nums []int, left, right int) []int {
+		// 递归终止条件
+		if left > right {
+			return nil
+		}
+		// 左右指针及主元
+		i, j, pivot := left, right, nums[left]
+		for i < j {
+			// 寻找小于主元的右边元素
+			for i < j && nums[j] >= pivot {
+				j--
+			}
+			// 寻找大于主元的左边元素
+			for i < j && nums[i] <= pivot {
+				i++
+			}
+			// 交换i/j下标元素
+			nums[i], nums[j] = nums[j], nums[i]
+		}
+		// 交换元素
+		nums[i], nums[left] = nums[left], nums[i]
+		quick(nums, left, i-1)
+		quick(nums, i+1, right)
+		return nums
+	}
+	return quick(nums, 0, len(nums)-1)
 }
